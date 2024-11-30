@@ -1,0 +1,13 @@
+[build]
+  publish = "build" # or "dist" or "public" depending on your build output
+  command = "npm run build" # or your build command
+
+[[redirects]]
+  from = "/*"
+  to = "/index.html"
+  status = 200 
+
+[[headers]]
+  for = "/*"
+  [headers.values]
+    Cache-Control = "public, max-age=31536000"
