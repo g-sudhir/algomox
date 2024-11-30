@@ -4,7 +4,7 @@
   "type": "module",
   "scripts": {
     "dev": "vite",
-    "build": "react-scripts build",
+    "build": "vite build",
     "preview": "vite preview",
     "server": "nodemon src/server/index.js",
     "build:css": "tailwindcss -i src/index.css -o dist/output.css --minify"
