@@ -7,7 +7,8 @@
     "build": "vite build",
     "preview": "vite preview",
     "server": "nodemon src/server/index.js",
-    "build:css": "tailwindcss -i src/index.css -o dist/output.css --minify"
+    "build:css": "tailwindcss -i src/index.css -o dist/output.css --minify",
+    "postbuild": "npm run build:css"
   },
   "dependencies": {
     "@vitejs/plugin-react": "^4.2.1",
