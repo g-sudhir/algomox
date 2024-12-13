@@ -61,7 +61,7 @@ function App() {
   const handleLogin = (response) => {
     console.log(response);
     if (response && response.token) {
-      setToken(response.token);
+      setToken(response.token,response.data.user.role);
       setAuthenticated(true);
     } else {
       console.error("Invalid login response:", response);
