@@ -1,7 +1,8 @@
 import { jwtDecode } from 'jwt-decode';
 
-export const setToken = (token) => {
+export const setToken = (token,role) => {
   localStorage.setItem('token', token);
+  localStorage.setItem('role',role);
 };
 
 export const getToken = () => {
@@ -18,9 +19,7 @@ export const isAuthenticated = () => {
 };
 
 export const isAdmin = () => {
-  // Implement your admin check logic here
-  // For example, you might decode the JWT token and check for an admin role
-  return true; // Replace with actual admin check
+  return localStorage.getItem('role') === "admin"; 
 };
 
 export const getUserId = () => {
