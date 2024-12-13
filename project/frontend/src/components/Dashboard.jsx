@@ -1,26 +1,60 @@
-import React, { useState, useEffect} from 'react';
+import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { ArrowRight } from 'lucide-react';
 import EventCard from './EventCard';
 import { fetchEvents } from './../services/api';
+import { getUserId } from '../utils/auth';
 
 function Dashboard() {
   const navigate = useNavigate();
-  
-  const [featuredEvents, setFeaturedEvents] = useState([]);
-  useEffect(()=>{
+
+  const [events, setEvents] = useState([]);
+  const [upcomingEvents, setUpcomingEvents] = useState([]);
+  const [registeredEvents, setRegisteredEvents] = useState([]);
+  const [pastEvents, setPastEvents] = useState([]);
+
+  const userId = getUserId();
+
+  useEffect(() => {
     loadEvents();
-  },[])
+  }, []);
 
   const loadEvents = async () => {
-    try{
+    try {
       const data = await fetchEvents();
-      setFeaturedEvents(data.slice(0,2));
-    }
-    catch(error){
+      setEvents(data);
+      categorizeEvents(data);
+    } catch (error) {
       console.log(error);
     }
-  }
+  };
+
+  const categorizeEvents = (events) => {
+    const now = new Date();
+    const upcoming = [];
+    const registered = [];
+    const past = [];
+
+    events.forEach(event => {
+      const startDate = new Date(event.startDate);
+      const endDate = new Date(event.endDate);
+      const isRegistered = event.registrations.some(reg => reg.user === userId);
+
+      if (endDate < now) {
+        past.push(event);
+      } else if (startDate > now) {
+        upcoming.push(event);
+      }
+
+      if (isRegistered) {
+        registered.push(event);
+      }
+    });
+
+    setUpcomingEvents(upcoming);
+    setRegisteredEvents(registered);
+    setPastEvents(past);
+  };
 
   return (
     <div className="max-w-7xl mx-auto space-y-8">
@@ -50,8 +84,8 @@ function Dashboard() {
           </button>
         </div>
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-          {featuredEvents.map(event => (
-            <EventCard key={event.id} event={event} />
+          {events.slice(0, 2).map(event => (
+            <EventCard key={event._id} event={event} />
           ))}
         </div>
       </div>
@@ -60,15 +94,15 @@ function Dashboard() {
       <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
         <div className="bg-white p-6 rounded-xl shadow-md">
           <h3 className="text-lg font-semibold text-gray-900 mb-2">Upcoming Events</h3>
-          <p className="text-3xl font-bold text-indigo-600">12</p>
+          <p className="text-3xl font-bold text-indigo-600">{upcomingEvents.length}</p>
         </div>
         <div className="bg-white p-6 rounded-xl shadow-md">
           <h3 className="text-lg font-semibold text-gray-900 mb-2">Registered Events</h3>
-          <p className="text-3xl font-bold text-green-600">2</p>
+          <p className="text-3xl font-bold text-green-600">{registeredEvents.length}</p>
         </div>
         <div className="bg-white p-6 rounded-xl shadow-md">
           <h3 className="text-lg font-semibold text-gray-900 mb-2">Past Events</h3>
-          <p className="text-3xl font-bold text-gray-600">8</p>
+          <p className="text-3xl font-bold text-gray-600">{pastEvents.length}</p>
         </div>
       </div>
     </div>
