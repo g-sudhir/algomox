@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
-import { getRegisteredEvents } from '../services/mockApi';
+// import { getRegisteredEvents } from '../services/mockApi';
+import { fetchMyEvents } from '../services/api';
 import EventCard from '../components/EventCard';
 import toast from 'react-hot-toast';
 
@@ -13,7 +14,8 @@ function RegisteredEvents() {
 
   const loadRegisteredEvents = async () => {
     try {
-      const events = await getRegisteredEvents();
+      const events = await fetchMyEvents();
+      // console.log(await fetchMyEvents());
       setRegisteredEvents(events);
     } catch (error) {
       toast.error('Failed to load registered events');
